@@ -7,15 +7,12 @@ require('dotenv').config();
 
 const app = express();
 
-// Middleware
 app.use(express.json());
 app.use(cors());
 
-// Ma'lumotlar fayllari
 const USERS_FILE = './users.json';
 const POSTS_FILE = './posts.json';
 
-// Ma'lumotlarni fayldan o‘qish
 const readData = async (file) => {
   try {
     const data = await fs.readFile(file, 'utf8');
@@ -26,12 +23,10 @@ const readData = async (file) => {
   }
 };
 
-// Ma'lumotlarni faylga yozish
 const writeData = async (file, data) => {
   await fs.writeFile(file, JSON.stringify(data, null, 2));
 };
 
-// JWT Middleware
 const authenticateToken = (req, res, next) => {
   const authHeader = req.headers['authorization'];
   const token = authHeader && authHeader.split(' ')[1];
@@ -45,7 +40,6 @@ const authenticateToken = (req, res, next) => {
   });
 };
 
-// Foydalanuvchi kontrolleri
 const userController = {
   royxatdanOtish: async (req, res) => {
     try {
@@ -136,7 +130,6 @@ const userController = {
   }
 };
 
-// Post kontrolleri
 const postController = {
   postYaratish: async (req, res) => {
     try {
@@ -243,7 +236,6 @@ const postController = {
   }
 };
 
-// Routerlar
 const userRouter = express.Router();
 userRouter.post('/royxatdan-otish', userController.royxatdanOtish);
 userRouter.post('/kirish', userController.kirish);
@@ -261,6 +253,5 @@ postRouter.delete('/:id', authenticateToken, postController.postOchirish);
 app.use('/api/foydalanuvchilar', userRouter);
 app.use('/api/postlar', postRouter);
 
-// Server
 const PORT = process.env.PORT || 3000;
 app.listen(PORT, () => console.log(`Server ${PORT} portida ishlayapti`));
